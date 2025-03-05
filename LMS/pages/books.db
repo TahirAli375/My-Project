@@ -1,0 +1,3 @@
+The `books.db` file is an SQLite database file and does not contain any human-readable contents. It is created and managed by the SQLite library. Therefore, the file is intentionally left blank as it will be populated by the application when the database is created and records are inserted.
+
+# This file is intentionally left blank.
