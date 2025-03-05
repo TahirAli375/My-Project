@@ -34,30 +34,29 @@ plt.savefig('new_users.png')
 st.image('new_users.png')
 st.divider()
 
-conn=sqlite3.connect('books.db')
+conn=sqlite3.connect('user_books.db')
 c=conn.cursor()
 def formCreation():
     st.subheader('New Book To Database')
     with st.form(key='Registration Form'):
-        Book_Name=st.text_input('Please Enter The Name of the Book')
-        Name=st.text_input('Please Enter The Name of The Author:')
+        title = st.text_input('Please Enter The Name of the Book')
+        author = st.text_input('Please Enter The Name of The Author:')
         
-
-        submit= st.form_submit_button(label="Submit")
-    if submit == True:
+        submit = st.form_submit_button(label="Submit")
+    if submit:
         st.success("Your Request for the New book has been submitted Successfully!")
-        info(Book_Name,Name)
+        info(title, author)
 
-
-def info(a,b):
-    c.execute(""""
-                   
-Create Table if not exists Registrations(Name Text(50),FName Text(50),CNIC int(50) )                
- """
-    )
-    c.execute("Insert info Registration values(?,?,)",(a,b,))
+def info(a, b):
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS books (
+            title TEXT(50),
+            author TEXT(50)
+        )
+    """)
+    c.execute("INSERT INTO books (title,author) VALUES (?, ?)", (a, b))
     conn.commit()
     conn.close()
-    st.succes("user has added the values to the Database")
+    st.success("User has added the values to the Database")
 
 formCreation()

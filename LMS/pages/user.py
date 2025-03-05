@@ -1,5 +1,7 @@
 import sqlite3
 import streamlit as st
+import datetime as dt
+k=dt.datetime.now()
 
 # Database connection setup
 conn = sqlite3.connect('user_books.db', check_same_thread=False)
@@ -48,7 +50,7 @@ def search_book(title):
     return c.fetchall()
 
 # Function to save registration info
-def save_registration(book_name, name, fname, cnic):
+def save_registration(book_name, name, fname, cnic,From_Date,To_Date):
     with sqlite3.connect('book.db', check_same_thread=False) as conn:
         cursor = conn.cursor()
         cursor.execute('''
@@ -56,11 +58,13 @@ def save_registration(book_name, name, fname, cnic):
             book_Name TEXT,
             Name TEXT,
             FName TEXT,
-            CNIC INTEGER
+            CNIC INTEGER,
+            From_Date TEXT,
+            To_Date TEXT
         )
         ''')
-        cursor.execute('INSERT INTO Registrations (book_Name, Name, FName, CNIC) VALUES (?, ?, ?, ?)', 
-                      (book_name, name, fname, cnic))
+        cursor.execute('INSERT INTO Registrations (book_Name, Name, FName, CNIC,From_Date,To_Date) VALUES (?, ?, ?, ?,?,?)', 
+                      (book_name, name, fname, cnic,From_Date,To_Date))
         conn.commit()
 
 # Streamlit interface
@@ -81,17 +85,18 @@ if st.button('Search'):
             st.warning("Book not found")
     else:
         st.warning("Please enter a book title to search")
-
 # Registration section (optional)
-st.subheader("Book Registration")
+st.subheader("Register for a book You want to borrow! 📚")
 book_name = st.selectbox('Select a book to register:', [book[1] for book in c.execute('SELECT * FROM books').fetchall()])
 name = st.text_input('Enter your name:')
 fname = st.text_input('Enter your father\'s name:')
-cnic = st.text_input('Enter your CNIC number:')
+cnic = st.number_input('Enter your CNIC number:')
+From_Date=st.date_input('From:',k.date())
+To_Date=st.date_input('To:')
 
 if st.button('Register'):
     if name and fname and cnic:
-        save_registration(book_name, name, fname, cnic)
+        save_registration(book_name, name, fname, cnic,From_Date,To_Date)
         st.success("Registration successful!")
     else:
         st.warning("Please fill in all the fields")
